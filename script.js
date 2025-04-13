@@ -38,6 +38,10 @@ function formatIndianNumber(number) {
     document.getElementById(id).addEventListener('input', calculateROI);
   });
   
+  function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('active');
+  }
+  
   let salaryChart = null; // Initialize chart variable
   
   function calculateROI() {
