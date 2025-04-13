@@ -1,63 +1,66 @@
+
 # 🎓 MBA ROI Calculator
 
-A web-based tool to calculate the **Return on Investment (ROI)** of pursuing an MBA. This calculator helps prospective students make informed decisions by simulating post-MBA salary growth, loan repayment, opportunity cost, breakeven point, and more — all visualized in a simple interface with comparative graphs.
+A sleek and interactive web-based MBA ROI (Return on Investment) Calculator designed to help prospective MBA students evaluate the financial feasibility of pursuing an MBA. This tool allows users to compare pre- and post-MBA salaries, loan repayment schedules, and more — with detailed visual graphs and yearly breakdowns.
 
----
+## ✨ Features
 
-## 📌 Features
+- Input key parameters like tuition, living expenses, salary growth rates, loan interest, and duration.
+- Calculates:
+  - Total Fees
+  - Opportunity Cost (missed salary during MBA)
+  - Monthly EMI
+  - Total Loan Repayment
+  - Total Investment
+  - Breakeven Years
+  - ROI Percentage
+- Interactive and dynamic salary comparison graph (with and without MBA).
+- Clear tabular breakdown of yearly loan repayment and salary gains.
 
-- 📈 **Compare Salary Growth**: See salary projections with and without an MBA.
-- 🧾 **Loan Analysis**: Calculates EMI, total repayment, and yearly loan impact.
-- 💸 **Opportunity Cost**: Accounts for missed earnings during the MBA.
-- 📊 **Interactive Charts**: Visual representation of your career ROI.
-- 📅 **Breakeven Year**: Know when your investment pays off.
-- 💡 User-friendly interface built with vanilla JS, HTML & CSS.
-
----
-
-## 🧮 Inputs
-
-| Field                         | Description                                       | Default Value       |
-|------------------------------|---------------------------------------------------|---------------------|
-| Total Fees (₹)               | Tuition and other program-related costs           | ₹21,50,000          |
-| Pre-MBA Salary (₹)           | Your current annual salary                        | ₹11,00,000          |
-| Post-MBA Salary (₹)          | Expected salary after MBA                         | ₹16,00,000          |
-| Program Duration (years)     | Length of your MBA program                        | 2                   |
-| Living Expenses per Year (₹) | Cost of living during MBA                         | ₹2,00,000           |
-| Loan Interest Rate (%)       | Interest rate for your education loan             | 8.7%                |
-| Pre-MBA Salary Growth Rate (%)| Annual growth rate without MBA                   | 10%                 |
-| Post-MBA Salary Growth Rate (%)| Annual growth rate with MBA                     | 15%                 |
-| Loan Repayment Term (years)  | Duration to repay the loan                        | 10                  |
-
----
-
-![image](https://github.com/user-attachments/assets/75c18feb-0252-4560-97f4-41d083b6fb80)
+## 📸 Demo
+![image](https://github.com/user-attachments/assets/05ac088e-8366-4d27-bbf4-1771a3707ae3)
 
 
----
+## 🧮 Technologies Used
 
-## 🛠️ Tech Stack
-
-- **Frontend**: HTML, CSS, JavaScript
-- **Charts**: [Chart.js](https://www.chartjs.org/) (for interactive graphs)
-
----
-
-## 📂 Project Structure
-
-```bash
-📁 mba-roi-calculator/
-├── index.html         # Main HTML interface
-├── style.css          # All styling
-├── script.js          # Logic and calculations
-├── README.md          # This file
+- HTML, CSS, JavaScript
+- Chart.js for interactive graph rendering
 
 ## 📌 To Run Locally
 
- **Clone this repository**  
-   -Open your terminal and run:
-   -git clone https://github.com/Pushpendra-Verma/mba-roi-calculator.git
-   -or Open index.html in your browser or use a local server (like VS Code Live Server).
+Clone this repo:
 
+```bash
+git clone https://github.com/Pushpendra-Verma/mba-roi-calculator.git
+```
 
+Then open `index.html` in your browser, or use a local development server like [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in VS Code.
 
+## 📂 Folder Structure
+
+```
+mba-roi-calculator/
+│
+├── index.html           # Main HTML page
+├── style.css            # Styling
+├── script.js            # Calculator logic
+└── README.md            # Project info
+```
+
+## 💡 Future Improvements
+
+- Allow data download in CSV or PDF.
+- Mobile responsiveness.
+- Add option to compare multiple B-schools.
+
+## 🤝 Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+---
+
+> Created by [Pushpendra Verma](https://github.com/Pushpendra-Verma)
