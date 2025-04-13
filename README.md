@@ -51,3 +51,13 @@ A web-based tool to calculate the **Return on Investment (ROI)** of pursuing an 
 ├── style.css          # All styling
 ├── script.js          # Logic and calculations
 ├── README.md          # This file
+
+📌 To Run Locally
+Clone this repo:
+
+bash
+Copy
+Edit
+git clone https://github.com/Pushpendra-Verma/mba-roi-calculator.git
+Open index.html in your browser or use a local server (like VS Code Live Server).
+
