@@ -1,24 +1,98 @@
+/* style.css */
+
 body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f4f6f8;
-  }
-  
-  .container {
-    display: flex;
-    height: 100vh;
-  }
-@keyframes flash {
-  0%, 100% {
-    background-color: #002fff;
-    box-shadow: 0 0 10px #ff00e1;
-  }
-  50% {
-    background-color: #4d50ff;
-    box-shadow: 0 0 20px #c14dff;
-  }
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f6f8;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for mobile */
 }
 
+/* Container */
+.container {
+  display: flex;
+  min-height: 100vh; /* Ensure full height */
+}
+
+/* Hamburger menu */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1001;
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+/* Close button for sidebar */
+.close-sidebar {
+  display: none;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 300px; /* Desktop width */
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  font-size: 24px; /* Desktop-friendly */
+  font-weight: 500;
+  color: #333;
+}
+
+.sidebar label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 16px; /* Clear for desktop */
+}
+
+.sidebar input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid #d2d2d2;
+  font-size: 16px;
+}
+
+.sidebar button {
+  padding: 12px;
+  width: 100%;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar button:hover {
+  background-color: #0056b3;
+}
+
+/* Loan Breakdown button */
 .loanBreakdown {
   display: inline-block;
   margin-top: 20px;
@@ -30,166 +104,154 @@ body {
   text-decoration: none;
   border-radius: 6px;
   transition: background-color 0.3s ease;
-  animation: flash 1s infinite;
 }
 
 .loanBreakdown:hover {
   background-color: #b30095;
-  animation: none; /* stop flashing on hover for better UX */
-  box-shadow: none; /* remove glow on hover */
 }
 
-  .sidebar {
-    width: 300px;
-    padding: 15px;
-    background-color: #ffffff;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    border-radius: 10px;
-    position: relative;
-
-  }
-  
-  .sidebar h2 {
-    margin-top: 0;
-  }
-  
-  .sidebar label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-  }
-  
-  .sidebar input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 4px;
-    box-sizing: border-box;
-    border-radius: 8px;
-    border: 1px solid #d2d2d2;
-  }
-  
-  .sidebar button {
-    padding: 10px;
-    width: 100%;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 5px;
-    border-radius: 20px;
-  }
-  
-  .sidebar button:hover {
-    background-color: #0056b3;
-  }
-  
-/*outer whilte color box*/
-  .results {
-    flex-grow: 1;
-    padding: 30px;
-    overflow-y: auto;
-    background-color: #f4f6f8;
- 
-  
-  }
-  
-  .results h1 {
-    margin-top: 5px;
-  }
-  
-  #output {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
- 
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    background-color: #ffffff;
-
-  }
-  
-  table th, table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-
-  }
-  
-  table th {
-    background-color: #007bff;
-    color: white;
-    padding: 10px;
-  }
-  
-   .chart-container {
-    margin-bottom: 1px; 
-    width: 100%;     
-    max-width: 1200px; 
-    min-height: 300px;
-    height: auto;
-    aspect-ratio: 2/1;
-    background-color: white;
-    border-radius: 10px;
-   }
-     
-
-  .mainHeading {
-    font-size: 40px;
-    margin-bottom: 20px;
-    color: #333;
-    margin-top: 15px;
-  }
-
-  /* Default styles */
-.sidebar {
-  width: 250px;
-  transition: transform 0.3s ease;
+/* Results section */
+.results {
+  flex-grow: 1;
+  padding: 30px;
+  overflow-y: auto;
+  background-color: #f4f6f8;
 }
 
-/* Hamburger hidden by default */
-.hamburger {
-  display: none;
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 1001;
-  font-size: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
+.results h1 {
+  font-size: 40px; /* Desktop-friendly */
+  margin-bottom: 20px;
+  color: #333;
+  margin-top: 15px;
 }
 
-/* Mobile styles */
+#output {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #ffffff;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  font-size: 16px; /* Desktop-friendly */
+}
+
+table th {
+  background-color: #007bff;
+  color: white;
+  padding: 12px;
+}
+
+/* Chart container */
+.chart-container {
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 1200px;
+  min-height: 400px; /* Desktop height */
+  height: auto;
+  aspect-ratio: 2/1;
+  background-color: white;
+  border-radius: 10px;
+}
+
+/* Mobile-specific styles */
 @media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .close-sidebar {
+    display: block;
+  }
+
   .sidebar {
     transform: translateX(-100%);
     position: fixed;
     top: 0;
     left: 0;
+    width: 100%;
+    max-width: 320px;
     height: 100%;
     z-index: 1000;
-    background-color: white;
+    padding: 15px;
+    border-radius: 0;
   }
 
   .sidebar.active {
     transform: translateX(0);
   }
 
-  .hamburger {
-    display: block;
+  .sidebar h2 {
+    font-size: 20px;
+  }
+
+  .sidebar label {
+    font-size: 14px;
+  }
+
+  .sidebar input {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .sidebar button {
+    font-size: 15px;
+    padding: 12px;
+  }
+
+  .results {
+    padding: 15px;
+  }
+
+  .results h1 {
+    font-size: 28px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+
+  #output {
+    padding: 15px;
+    font-size: 14px;
+  }
+
+  table th,
+  table td {
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  .chart-container {
+    max-width: 100%;
+    min-height: 250px;
+    aspect-ratio: 1.5/1;
   }
 
   .assumptions {
-    color: black;
-    font-size: 14px;
-    font-style: italic;
-    
+    font-size: 12px;
+    margin-bottom: 10px;
   }
+
+  .loanBreakdown {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+}
+
+/* Ensure charts fit */
+canvas {
+  max-width: 100% !important;
+  height: auto !important;
 }
