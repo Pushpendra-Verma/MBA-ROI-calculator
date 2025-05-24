@@ -71,9 +71,25 @@ function calculateROI() {
   const totalLivingExpenses = livingExpenses * mbaDuration;
   const principalLoan = totalFees + totalLivingExpenses;
 
+  // Quarterly disbursements for totalFees over mbaDuration
+  const quarters = mbaDuration * 4;
+  const quarterlyFee = totalFees / quarters;
+
   // Interest accrued during moratorium period (mbaDuration + 1 years, compounded yearly)
   const moratoriumYears = mbaDuration + 1;
-  let loanAmount = principalLoan * Math.pow(1 + interestRate, moratoriumYears);
+  let loanAmount = totalLivingExpenses; // Living expenses disbursed upfront
+  let disbursedFees = 0;
+
+  // Track disbursed fees and interest yearly
+  for (let year = 1; year <= moratoriumYears; year++) {
+    // Add quarterly disbursements for the year (4 quarters, except in the last moratorium year)
+    const quartersThisYear = year <= mbaDuration ? 4 : 0; // No disbursements in extra moratorium year
+    for (let q = 1; q <= quartersThisYear; q++) {
+      disbursedFees += quarterlyFee;
+    }
+    // Apply yearly compounding to the total disbursed amount so far
+    loanAmount = (loanAmount + (year <= mbaDuration ? quarterlyFee * 4 : 0)) * (1 + interestRate);
+  }
 
   // EMI calculation for repayment starting after moratorium, lasting loanTenure years
   const totalMonths = loanTenure * 12;
@@ -116,11 +132,20 @@ function calculateROI() {
     if (year <= moratoriumYears) {
       withMBASalaries.push(0);
       withoutMBASalaries.push(withoutMBASalary);
+      // Calculate disbursed amount and interest up to this year
+      let yearDisbursedFees = 0;
+      for (let y = 1; y <= Math.min(year, mbaDuration); y++) {
+        yearDisbursedFees += quarterlyFee * 4;
+      }
+      let yearLoan = totalLivingExpenses + yearDisbursedFees;
+      for (let y = 1; y <= year; y++) {
+        yearLoan *= (1 + interestRate);
+      }
       tableData.push({
         year,
         loanPaid: 0,
         cumulativeLoan: 0,
-        remainingLoan: principalLoan * Math.pow(1 + interestRate, year)
+        remainingLoan: yearLoan
       });
     } else {
       withMBASalary = (year === moratoriumYears + 1) ? postSalary : withMBASalary * (1 + growthRatePostMba);
