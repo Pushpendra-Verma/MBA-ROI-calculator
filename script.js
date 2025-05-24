@@ -69,9 +69,9 @@ function calculateROI() {
 
   // EMI calculation for repayment starting after MBA, lasting loanTenure years
   const totalMonths = loanTenure * 12;
-  const monthlyEMI = loanAmount > 0 ?
-    loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths) / (Math.pow(1 + monthlyRate, totalMonths) - 1) :
-    0;
+  const monthlyEMI = loanAmount > 0
+    ? loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths) / (Math.pow(1 + monthlyRate, totalMonths) - 1)
+    : 0;
   const yearlyEMI = monthlyEMI * 12;
   const totalLoanRepayment = monthlyEMI * totalMonths;
 
@@ -83,7 +83,7 @@ function calculateROI() {
     currentPreSalary *= (1 + growthRate);
   }
 
-  // Total investment: MBA expense + opportunity cost
+  // Total investment: MBA expense (principalLoan) + opportunity cost
   const totalInvestment = principalLoan + opportunityCost;
 
   // Salary projections and loan repayment
@@ -124,8 +124,8 @@ function calculateROI() {
         for (let month = 1; month <= 12; month++) {
           if (tempRemainingLoan <= 0) break;
           const interest = tempRemainingLoan * monthlyRate;
-          const principalPaid = Math.min(monthlyEMI, tempRemainingLoan + interest);
-          tempRemainingLoan = tempRemainingLoan - (principalPaid - interest);
+          const principalPaid = Math.min(monthlyEMI - interest, tempRemainingLoan);
+          tempRemainingLoan -= principalPaid;
         }
         loanPaidThisYear = Math.min(yearlyEMI, remainingLoan + (remainingLoan * interestRate));
         cumulativeLoanPaid += loanPaidThisYear;
@@ -156,40 +156,40 @@ function calculateROI() {
   // ROI Percentage: Annualized over loan tenure post-MBA
   const netGain = totalGain;
   const yearsForROI = loanTenure;
-  const roiPercentage = totalInvestment > 0 && yearsForROI > 0 ?
-    ((Math.pow((netGain + totalInvestment) / totalInvestment, 1 / yearsForROI) - 1) * 100) :
-    0;
+  const roiPercentage = totalInvestment > 0 && yearsForROI > 0
+    ? ((Math.pow((netGain + totalInvestment) / totalInvestment, 1 / yearsForROI) - 1) * 100)
+    : 0;
 
   // Output results
   let output = `
-      <p><strong>Total Fees:</strong> ₹${formatIndianNumber(totalFees)}</p>
-      <p><strong>Opportunity Cost:</strong> ₹${formatIndianNumber(opportunityCost)}</p>
-      <p><strong>Monthly EMI:</strong> ₹${formatIndianNumber(monthlyEMI.toFixed(2))}</p>
-      <p><strong>Total Loan Repayment:</strong> ₹${formatIndianNumber(totalLoanRepayment)}</p>
-      <p><strong>Total Investment:</strong> ₹${formatIndianNumber(totalInvestment)}</p>
-      <p><strong>Breakeven Years:</strong> ${breakevenYear || 'N/A'}</p>
-      <p><strong>Annualized ROI:</strong> ${roiPercentage.toFixed(2)}%</p>
-    `;
+    <p><strong>Total Fees:</strong> ₹${formatIndianNumber(totalFees)}</p>
+    <p><strong>Opportunity Cost:</strong> ₹${formatIndianNumber(opportunityCost)}</p>
+    <p><strong>Monthly EMI:</strong> ₹${formatIndianNumber(monthlyEMI.toFixed(2))}</p>
+    <p><strong>Total Loan Repayment:</strong> ₹${formatIndianNumber(totalLoanRepayment)}</p>
+    <p><strong>Total Investment:</strong> ₹${formatIndianNumber(totalInvestment)}</p>
+    <p><strong>Breakeven Years:</strong> ${breakevenYear || 'N/A'}</p>
+    <p><strong>Annualized ROI:</strong> ${roiPercentage.toFixed(2)}%</p>
+  `;
   document.getElementById("output").innerHTML = output;
 
   // Table
   let tableHTML = `
-      <tr>
-        <th>Year</th>
-        <th>Loan Paid (₹)</th>
-        <th>Cumulative Loan Paid (₹)</th>
-        <th>Remaining Loan (₹)</th>
-      </tr>
-    `;
+    <tr>
+      <th>Year</th>
+      <th>Loan Paid (₹)</th>
+      <th>Cumulative Loan Paid (₹)</th>
+      <th>Remaining Loan (₹)</th>
+    </tr>
+  `;
   tableData.forEach(row => {
     tableHTML += `
-        <tr>
-          <td>${row.year}</td>
-          <td>₹${formatIndianNumber(row.loanPaid)}</td>
-          <td>₹${formatIndianNumber(row.cumulativeLoan)}</td>
-          <td>₹${formatIndianNumber(row.remainingLoan)}</td>
-        </tr>
-      `;
+      <tr>
+        <td>${row.year}</td>
+        <td>₹${formatIndianNumber(row.loanPaid)}</td>
+        <td>₹${formatIndianNumber(row.cumulativeLoan)}</td>
+        <td>₹${formatIndianNumber(row.remainingLoan)}</td>
+      </tr>
+    `;
   });
   document.getElementById("resultsTable").innerHTML = tableHTML;
 
@@ -202,7 +202,8 @@ function calculateROI() {
     type: 'line',
     data: {
       labels: years,
-      datasets: [{
+      datasets: [
+        {
           label: 'Salary with MBA (₹)',
           data: withMBASalaries,
           borderColor: 'green',
@@ -219,18 +220,16 @@ function calculateROI() {
       ]
     },
     options: {
-      responsive: true, // Ensures the chart resizes with the container
-      maintainAspectRatio: false, // Allows custom aspect ratio based on container
-      aspectRatio: 1.5, // Suggests a wider-than-tall chart (e.g., 600px wide x 400px high at max)
+      responsive: true,
+      maintainAspectRatio: false,
+      aspectRatio: 1.5,
       plugins: {
-        legend: {
-          display: true
-        },
+        legend: { display: true },
         tooltip: {
           mode: 'index',
           intersect: false,
           callbacks: {
-            label: function (context) {
+            label: function(context) {
               return `${context.dataset.label}: ₹${formatIndianNumber(context.parsed.y)}`;
             }
           }
@@ -248,7 +247,7 @@ function calculateROI() {
             text: 'Salary (₹)'
           },
           ticks: {
-            callback: function (value) {
+            callback: function(value) {
               return '₹' + formatIndianNumber(value);
             }
           }
@@ -278,16 +277,14 @@ function calculateROI() {
       }]
     },
     options: {
-      responsive: true, // Ensures the chart resizes with the container
-      maintainAspectRatio: false, // Allows custom aspect ratio based on container
-      aspectRatio: 1, // Keeps pie chart roughly square (e.g., 300px x 300px at min-height)
+      responsive: true,
+      maintainAspectRatio: false,
+      aspectRatio: 1,
       plugins: {
-        legend: {
-          position: 'top'
-        },
+        legend: { position: 'top' },
         tooltip: {
           callbacks: {
-            label: function (context) {
+            label: function(context) {
               return `${context.label}: ₹${formatIndianNumber(context.raw)}`;
             }
           }
