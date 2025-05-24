@@ -227,7 +227,7 @@ function calculateROI() {
   });
   document.getElementById("resultsTable").innerHTML = tableHTML;
 
-  // Chart
+// Chart
   const ctx = document.getElementById('salaryChart').getContext('2d');
   if (salaryChart) {
     salaryChart.destroy();
@@ -240,14 +240,20 @@ function calculateROI() {
         {
           label: 'Salary with MBA (₹)',
           data: withMBASalaries,
-          borderColor: 'green',
+          borderColor: '#36A2EB', // Softer blue for cleaner look
+          backgroundColor: 'rgba(54, 162, 235, 0.1)', // Subtle fill
+          borderWidth: 2, // Thinner lines
+          pointRadius: 3, // Smaller points
           fill: false,
           tension: 0.3
         },
         {
           label: 'Salary without MBA (₹)',
           data: withoutMBASalaries,
-          borderColor: 'blue',
+          borderColor: '#4BC0C0', // Softer teal
+          backgroundColor: 'rgba(75, 192, 192, 0.1)', // Subtle fill
+          borderWidth: 2,
+          pointRadius: 3,
           fill: false,
           tension: 0.3
         }
@@ -258,10 +264,22 @@ function calculateROI() {
       maintainAspectRatio: false,
       aspectRatio: 1.5,
       plugins: {
-        legend: { display: true },
+        legend: {
+          display: true,
+          labels: {
+            font: {
+              size: 12, // Smaller legend font
+              family: 'Segoe UI'
+            },
+            color: '#333'
+          }
+        },
         tooltip: {
           mode: 'index',
           intersect: false,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          titleFont: { size: 14 },
+          bodyFont: { size: 12 },
           callbacks: {
             label: function(context) {
               return `${context.dataset.label}: ₹${formatIndianNumber(context.parsed.y)}`;
@@ -278,58 +296,75 @@ function calculateROI() {
           beginAtZero: true,
           title: {
             display: true,
-            text: 'Salary (₹)'
+            text: 'Salary (₹ Lakhs)',
+            font: { size: 14, family: 'Segoe UI' }
           },
           ticks: {
             callback: function(value) {
-              return '₹' + formatIndianNumber(value);
-            }
+              return '₹' + (value / 100000).toFixed(1); // Convert to lakhs
+            },
+            font: { size: 12 }, // Smaller tick font
+            stepSize: 100000, // Adjust step size for cleaner grid
+            padding: 5
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)', // Lighter grid lines
+            lineWidth: 1
           }
         },
         x: {
           title: {
             display: true,
-            text: 'Year'
+            text: 'Year',
+            font: { size: 14, family: 'Segoe UI' }
+          },
+          ticks: {
+            font: { size: 12 },
+            maxRotation: 45, // Slight rotation for long labels
+            minRotation: 45
+          },
+          grid: {
+            display: false // Remove x-axis grid for cleaner look
           }
         }
       }
     }
   });
 
-  // Pie Chart for Cost Breakdown
-  const pieCtx = document.getElementById('pieChart').getContext('2d');
-  if (window.pieChart) {
-    window.pieChart.destroy();
-  }
-  window.pieChart = new Chart(pieCtx, {
-    type: 'pie',
-    data: {
-      labels: ['Total Fees', 'Opportunity Cost', 'Total Loan Repayment'],
-      datasets: [{
-        data: [totalFees, opportunityCost, totalLoanRepayment],
-        backgroundColor: ['#36A2EB', '#FFCE56', '#4BC0C0']
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      aspectRatio: 1,
-      plugins: {
-        legend: { position: 'top' },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return `${context.label}: ₹${formatIndianNumber(context.raw)}`;
-            }
-          }
-        }
-      },
-      title: {
-        display: true,
-        text: 'Cost Breakdown'
-      }
-    }
-  });
+  // // Pie Chart for Cost Breakdown
+  // const pieCtx = document.getElementById('pieChart').getContext('2d');
+  // if (window.pieChart) {
+  //   window.pieChart.destroy();
+  // }
+  // window.pieChart = new Chart(pieCtx, {
+  //   type: 'pie',
+  //   data: {
+  //     labels: ['Total Fees', 'Opportunity Cost', 'Total Loan Repayment'],
+  //     datasets: [{
+  //       data: [totalFees, opportunityCost, totalLoanRepayment],
+  //       backgroundColor: ['#36A2EB', '#FFCE56', '#4BC0C0']
+  //     }]
+  //   },
+  //   options: {
+  //     responsive: true,
+  //     maintainAspectRatio: false,
+  //     aspectRatio: 1,
+  //     plugins: {
+  //       legend: { position: 'top' },
+  //       tooltip: {
+  //         callbacks: {
+  //           label: function(context) {
+  //             return `${context.label}: ₹${formatIndianNumber(context.raw)}`;
+  //           }
+  //         }
+  //       }
+  //     },
+  //     title: {
+  //       display: true,
+  //       text: 'Cost Breakdown'
+  //     }
+  //   }
+  // });
 }
 
 loadInputsFromLocal();

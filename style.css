@@ -1,5 +1,3 @@
-/* style.css */
-
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -159,12 +157,15 @@ table th {
 .chart-container {
   margin-bottom: 20px;
   width: 100%;
-  max-width: 1200px;
-  min-height: 400px; /* Desktop height */
+  max-width: 1200px; /* Kept as per your provided CSS */
+  min-height: 350px; /* Reduced slightly for cleaner look */
   height: auto;
-  aspect-ratio: 2/1;
-  background-color: white;
-  border-radius: 10px;
+  aspect-ratio: 1.8/1; /* Adjusted for better proportion */
+  background-color: #fff;
+  border-radius: 12px; /* Softer corners */
+  padding: 15px; /* Breathing room */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Softer, deeper shadow */
+  border: 1px solid #e0e0e0; /* Subtle border for definition */
 }
 
 /* Mobile-specific styles */
@@ -236,7 +237,9 @@ table th {
   .chart-container {
     max-width: 100%;
     min-height: 250px;
-    aspect-ratio: 1.5/1;
+    aspect-ratio: 1.2/1; /* Compact for mobile */
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* Lighter shadow for mobile */
   }
 
   .assumptions {
