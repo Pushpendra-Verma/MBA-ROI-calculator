@@ -1,48 +1,59 @@
-// Function to format numbers in Indian style (e.g., 12,34,567)
 function formatIndianNumber(number) {
-  if (isNaN(number) || number === null) return "0";
-  let numStr = Math.round(number).toString();
-  let lastThree = numStr.slice(-3);
-  let otherDigits = numStr.slice(0, -3);
-  if (otherDigits !== '') {
-    lastThree = ',' + lastThree;
-    otherDigits = otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
-  }
-  return otherDigits + lastThree;
+    if (isNaN(number) || number === null) return "0";
+    let numStr = Math.round(number).toString();
+    let lastThree = numStr.slice(-3);
+    let otherDigits = numStr.slice(0, -3);
+    if (otherDigits !== '') {
+      lastThree = ',' + lastThree;
+      otherDigits = otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+    }
+    return otherDigits + lastThree;
 }
 
-// Function to parse Indian formatted number to float
 function parseIndianNumber(str) {
-  if (!str) return 0;
-  return parseFloat(str.replace(/,/g, '')) || 0;
+    if (!str) return 0;
+    return parseFloat(str.replace(/,/g, '')) || 0;
 }
 
-// Function to format input as Indian number while typing
+function loadInputsFromLocal() {
+  const saved = JSON.parse(localStorage.getItem('mbaUserInputs'));
+  if (!saved) return;
+  Object.entries(saved).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  });
+}
+
 function formatInputAsIndianNumber(input) {
-  input.addEventListener('input', function () {
+  input.addEventListener('input', function() {
     let value = parseIndianNumber(this.value);
     if (!isNaN(value)) {
       this.value = formatIndianNumber(value);
     }
-    calculateROI(); // Trigger calculation on input change
+    calculateROI();
+    saveInputsToLocal();
   });
 }
 
-// Apply Indian number formatting to financial inputs
 ['mbaCost', 'preSalary', 'postSalary', 'livingExpenses'].forEach(id => {
-  formatInputAsIndianNumber(document.getElementById(id));
+    formatInputAsIndianNumber(document.getElementById(id));
 });
 
-// Add dynamic updates for non-financial inputs
 ['mbaDuration', 'interestRate', 'growthRate', 'growthRatePostMba', 'loanTenure'].forEach(id => {
-  document.getElementById(id).addEventListener('input', calculateROI);
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', () => {
+      calculateROI();
+      saveInputsToLocal();
+    });
+  }
 });
 
 function toggleSidebar() {
-  document.querySelector('.sidebar').classList.toggle('active');
+    document.querySelector('.sidebar').classList.toggle('active');
 }
 
-let salaryChart = null; // Initialize chart variable
+let salaryChart = null;
 
 function calculateROI() {
   // Parse inputs
@@ -60,15 +71,13 @@ function calculateROI() {
   const totalLivingExpenses = livingExpenses * mbaDuration;
   const principalLoan = totalFees + totalLivingExpenses;
 
-  // Interest accrued during MBA duration (compounded monthly)
-  const monthlyRate = interestRate / 12;
-  let loanAmount = principalLoan;
-  for (let i = 0; i < mbaDuration * 12; i++) {
-    loanAmount *= (1 + monthlyRate);
-  }
+  // Interest accrued during moratorium period (mbaDuration + 1 years, compounded yearly)
+  const moratoriumYears = mbaDuration + 1;
+  let loanAmount = principalLoan * Math.pow(1 + interestRate, moratoriumYears);
 
-  // EMI calculation for repayment starting after MBA, lasting loanTenure years
+  // EMI calculation for repayment starting after moratorium, lasting loanTenure years
   const totalMonths = loanTenure * 12;
+  const monthlyRate = interestRate / 12;
   const monthlyEMI = loanAmount > 0
     ? loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths) / (Math.pow(1 + monthlyRate, totalMonths) - 1)
     : 0;
@@ -99,26 +108,26 @@ function calculateROI() {
   const withoutMBASalaries = [];
   const tableData = [];
 
-  // Include MBA duration and full loan tenure after MBA
-  for (let year = 1; year <= mbaDuration + loanTenure; year++) {
+  // Include moratorium period and loan tenure after moratorium
+  for (let year = 1; year <= moratoriumYears + loanTenure; year++) {
     years.push(`Year ${year}`);
     let loanPaidThisYear = 0;
 
-    if (year <= mbaDuration) {
+    if (year <= moratoriumYears) {
       withMBASalaries.push(0);
       withoutMBASalaries.push(withoutMBASalary);
       tableData.push({
         year,
         loanPaid: 0,
         cumulativeLoan: 0,
-        remainingLoan: loanAmount
+        remainingLoan: principalLoan * Math.pow(1 + interestRate, year)
       });
     } else {
-      withMBASalary = (year === mbaDuration + 1) ? postSalary : withMBASalary * (1 + growthRatePostMba);
+      withMBASalary = (year === moratoriumYears + 1) ? postSalary : withMBASalary * (1 + growthRatePostMba);
       withMBASalaries.push(withMBASalary);
       withoutMBASalaries.push(withoutMBASalary);
 
-      if (year - mbaDuration <= loanTenure) {
+      if (year - moratoriumYears <= loanTenure) {
         // Calculate loan balance monthly for accuracy
         let tempRemainingLoan = remainingLoan;
         for (let month = 1; month <= 12; month++) {
@@ -130,7 +139,7 @@ function calculateROI() {
         loanPaidThisYear = Math.min(yearlyEMI, remainingLoan + (remainingLoan * interestRate));
         cumulativeLoanPaid += loanPaidThisYear;
         remainingLoan = tempRemainingLoan > 0 ? tempRemainingLoan : 0;
-        if (year - mbaDuration === loanTenure) {
+        if (year - moratoriumYears === loanTenure) {
           remainingLoan = 0; // Ensure loan is fully paid at the end
         }
         // Net gain is the difference between post-MBA and pre-MBA salary, adjusted for EMI
@@ -298,5 +307,5 @@ function calculateROI() {
   });
 }
 
-// Initial calculation
+loadInputsFromLocal();
 calculateROI();

@@ -172,4 +172,11 @@ body {
   .hamburger {
     display: block;
   }
+
+  .assumptions {
+    color: black;
+    font-size: 14px;
+    font-style: italic;
+    
+  }
 }
