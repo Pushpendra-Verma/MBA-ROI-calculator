@@ -165,7 +165,7 @@ table th {
 /* Chart container */
 .chart-container {
   margin-bottom: 20px;
-  width: 100%;
+  width: 97%;
   max-width: 1200px; /* Kept as per your provided CSS */
   min-height: 350px; /* Reduced slightly for cleaner look */
   height: auto;
@@ -243,16 +243,9 @@ table th {
     font-size: 13px;
   }
 
-  .chart-container {
-    max-width: 100%;
-    min-height: 250px;
-    aspect-ratio: 1.2/1; /* Compact for mobile */
-    padding: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* Lighter shadow for mobile */
-  }
 
   .assumptions {
-    font-size: 12px;
+    font-size: 10px;
     margin-bottom: 10px;
   }
 

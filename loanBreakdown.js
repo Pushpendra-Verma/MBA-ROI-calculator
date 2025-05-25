@@ -1,6 +1,5 @@
-// Track payment method for each term (default: All terms Loan)
 const termPaymentMethods = {
-    1: 'loan',
+    1: 'paid',
     2: 'loan',
     3: 'loan',
     4: 'loan',
@@ -8,58 +7,7 @@ const termPaymentMethods = {
     6: 'loan'
 };
 
-// Initialize Pie Chart
-const ctx = document.getElementById('loanBreakdownChart').getContext('2d');
-let loanBreakdownChart = new Chart(ctx, {
-    type: 'pie',
-    data: {
-        labels: ['Principal', 'Interest'],
-        datasets: [{
-            data: [0, 0],
-            backgroundColor: ['#1a73e8', '#83b4ff'],
-            borderColor: ['#fff', '#fff'],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top',
-                labels: {
-                    font: {
-                        family: 'Roboto',
-                        size: 12
-                    },
-                    color: '#555'
-                }
-            },
-            title: {
-                display: true,
-                text: 'Loan Breakdown: Principal vs Interest',
-                font: {
-                    family: 'Roboto',
-                    size: 14,
-                    weight: '500'
-                },
-                color: '#333',
-                padding: {
-                    bottom: 20
-                }
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        let label = context.label || '';
-                        if (label) label += ': ';
-                        label += '₹' + context.raw.toLocaleString('en-IN');
-                        return label;
-                    }
-                }
-            }
-        }
-    }
-});
+let loanBreakdownChart = null;
 
 function formatNumber(num) {
     return '₹' + num.toLocaleString('en-IN', {
@@ -74,14 +22,21 @@ function toggleCSIS() {
     csisElements.forEach(element => {
         element.classList.toggle('csis-hidden', !csisToggle);
     });
-    calculateLoan();
+    debouncedCalculateLoan();
 }
 
 function toggleTermPayment(term) {
     const toggle = document.getElementById(`term${term}-toggle`);
     termPaymentMethods[term] = toggle.checked ? 'loan' : 'paid';
-    calculateLoan();
+    debouncedCalculateLoan();
 }
+
+['moratorium-months', 'term1-fee', 'term2-fee', 'term3-fee', 'term4-fee', 'term5-fee', 'term6-fee', 'interest-rate', 'repayment-months'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+        el.addEventListener('input', debouncedCalculateLoan);
+    }
+});
 
 function calculateLoan() {
     const csisEnabled = document.getElementById('csis-toggle').checked;
@@ -95,7 +50,7 @@ function calculateLoan() {
         parseFloat(document.getElementById('term6-fee').value) || 0
     ];
     const interestRate = parseFloat(document.getElementById('interest-rate').value) || 0;
-    const moratoriumMonths = 36;
+    const moratoriumMonths = parseFloat(document.getElementById('moratorium-months').value) || 0;
     const repaymentMonths = parseFloat(document.getElementById('repayment-months').value) || 0;
 
     let totalCashPaid = 0;
@@ -125,11 +80,9 @@ function calculateLoan() {
         const monthsToRepayment = moratoriumMonths - disbursementMonths[i];
         const years = monthsToRepayment / 12;
 
-        // Compound Interest: A = P * (1 + r)^t => Interest = A - P
         const compoundInterest = amount * Math.pow(1 + annualRate, years) - amount;
         totalMoratoriumInterest += compoundInterest;
 
-        // CSIS calculation
         let coveredByCSIS = 0;
         const newCumulative = cumulativeLoan + amount;
 
@@ -152,7 +105,6 @@ function calculateLoan() {
     const interestMoratorium = totalMoratoriumInterest - csisCoveredInterest;
     const principalAfter = loanAmount + interestMoratorium;
 
-    // EMI Calculation after Moratorium
     const r = monthlyRate;
     const n = repaymentMonths;
     const emi = (r === 0 || n === 0) ? principalAfter / (n || 1) :
@@ -164,7 +116,6 @@ function calculateLoan() {
     const totalInterest = interestMoratorium + repaymentInterest;
     const totalCost = totalRepayment + totalCashPaid;
 
-    // Without CSIS (for comparison)
     const principalNoCSIS = loanAmount + totalMoratoriumInterest;
     const emiNoCSIS = (r === 0 || n === 0) ? principalNoCSIS / (n || 1) :
         (principalNoCSIS * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
@@ -172,7 +123,6 @@ function calculateLoan() {
     const totalCostNoCSIS = totalRepaymentNoCSIS + totalCashPaid;
     const savings = totalCostNoCSIS - totalCost;
 
-    // Update UI
     document.getElementById('loan-amount').textContent = formatNumber(loanAmount);
     document.getElementById('interest-moratorium').textContent = formatNumber(interestMoratorium);
     document.getElementById('principal-after').textContent = formatNumber(principalAfter);
@@ -182,17 +132,63 @@ function calculateLoan() {
     document.getElementById('total-cost').textContent = formatNumber(totalCost);
     document.getElementById('savings').textContent = formatNumber(savings);
 
-    loanBreakdownChart.data.datasets[0].data = [loanAmount, totalInterest];
-    loanBreakdownChart.update();
+    if (!loanBreakdownChart) {
+        const ctx = document.getElementById('loanBreakdownChart').getContext('2d');
+        loanBreakdownChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Principal', 'Total Interest'],
+                datasets: [{
+                    data: [loanAmount, totalInterest],
+                    backgroundColor: ['#1E88E5', '#F4511E'],
+                    borderColor: ['#fff', '#fff'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14,
+                                family: 'Roboto'
+                            },
+                            color: '#333'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Loan Breakdown',
+                        font: {
+                            size: 16,
+                            family: 'Roboto'
+                        },
+                        color: '#333'
+                    }
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            const label = data.labels[tooltipItem.index];
+                            const value = data.datasets[0].data[tooltipItem.index];
+                            return `${label}: ₹${value.toLocaleString()}`;
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        loanBreakdownChart.data.datasets[0].data = [loanAmount, totalInterest];
+        loanBreakdownChart.update();
+    }
 }
 
-
-// Debounce function to limit how often calculateLoan is called
 let debounceTimeout;
 function debouncedCalculateLoan() {
     clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(calculateLoan, 300); // 300ms debounce
+    debounceTimeout = setTimeout(calculateLoan, 300);
 }
 
-// Initial calculation on page load
 calculateLoan();

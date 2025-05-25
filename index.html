@@ -1,82 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1MJ81TWZ2Q"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-
-    gtag('config', 'G-1MJ81TWZ2Q');
-  </script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ROI Calculator</title>
-  <meta name="description"
-    content="Calculate the ROI of your MBA by analyzing total fees, salary growth, loan repayment, and more.">
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBA ROI Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 </head>
-
 <body>
-  <button class="hamburger" onclick="toggleSidebar()">☰</button>
-  <div class="container">
-    <div class="sidebar" id="sidebar">
-      <button class="hamburger" onclick="toggleSidebar()">☰</button>
-      <button class="close-sidebar" onclick="toggleSidebar()">✕</button>
-      <h2 style="color: #0e80fa;">Input Parameters</h2>
-      <p style="color: #0b0b0b; font-size:12px;"><i>Assumption: Quarterly Fee Disbursement (Equal Installments)</i></p>
-      <p style="color: #0b0b0b; font-size: 12px;"><i>Morotorium period: 3 years</i></p>
-      <label>Total Fees (₹)
-        <input type="text" id="mbaCost" value="21,50,000" />
-      </label>
-      <label>Pre-MBA Salary (₹)
-        <input type="text" id="preSalary" value="10,00,000" />
-      </label>
-      <label>Post-MBA Salary (₹)
-        <input type="text" id="postSalary" value="16,00,000" />
-      </label>
-      <label>Program Duration (years)
-        <input type="number" id="mbaDuration" value="2" min="1" />
-      </label>
-      <label>Living Expenses per Year - (loan) (₹)
-        <input type="text" id="livingExpenses" value="0" />
-      </label>
-      <label>Loan Interest Rate (%)
-        <input type="number" id="interestRate" value="7.55" min="0" step="0.1" />
-      </label>
-      <label>Pre-MBA Salary Growth Rate (%)
-        <input type="number" id="growthRate" value="10" min="0" step="0.1" />
-      </label>
-      <label>Post-MBA Salary Growth Rate (%)
-        <input type="number" id="growthRatePostMba" value="15" min="0" step="0.1" />
-      </label>
-      <label>Loan Repayment Term (Post-Moratorium) years
-        <input type="number" id="loanTenure" value="7" min="1" />
-      </label>
-      <button onclick="calculateROI()">Calculate ROI</button>
-    </div>
-    <div class="results">
-      <h1 class="mainHeading">MBA ROI CALCULATOR 📈</h1>
-      <div id="output"></div>
-      <a href="loanBreakdown.html" class="loanBreakdown">Click - Detailed Loan Breakdown</a>
-      <div class="chart-container">
-        <canvas id="salaryChart"></canvas>
-      </div>
-      <table id="resultsTable"></table>
-    </div>
-  </div>
-  <script src="script.js"></script>
-  <script>
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('active');
-    }
-  </script>
-</body>
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <div class="container">
+        <aside class="sidebar">
+            <button class="close-sidebar" onclick="toggleSidebar()">✕</button>
+            <h2>Input Parameters</h2>
+            <p class="assumptions"><i>Assumption: Quarterly Fee Disbursement (Equal Installments)</i></p>
+            <p class="assumptions"><i>Morotorium period: 3 years</i></p>
+            <label for="mbaCost">Total Fees (₹)</label>
+            <input type="text" id="mbaCost" value="21,00,000">
+            <label for="preSalary">Pre-MBA Salary (₹)</label>
+            <input type="text" id="preSalary" value="8,00,000">
+            <label for="postSalary">Post-MBA Salary (₹)</label>
+            <input type="text" id="postSalary" value="16,00,000">
+            <label for="mbaDuration">Program Duration (years)</label>
+            <input type="number" id="mbaDuration" value="2">
+            <label for="livingExpenses">Living Expenses per Year - (loan) (₹)</label>
+            <input type="text" id="livingExpenses" value="0">
+            <label for="interestRate">Loan Interest Rate (%)</label>
+            <input type="number" id="interestRate" value="7.6" step="0.1">
+            <label for="growthRate">Pre-MBA Salary Growth Rate (%)</label>
+            <input type="number" id="growthRate" value="8" step="1">
+            <label for="growthRatePostMba">Post-MBA Salary Growth Rate (%)</label>
+            <input type="number" id="growthRatePostMba" value="15" step="1">
+            <label for="loanTenure">Loan Repayment Term (Post-Moratorium) years</label>
+            <input type="number" id="loanTenure" value="8" step="1">
+            <button onclick="calculateROI()">Calculate ROI</button>
+        </aside>
 
+        <section class="results">
+            <h1>MBA ROI CALCULATOR 📈</h1>
+            <div id="output"></div>
+            <a href="loanBreakdown.html" class="loanBreakdown">Click - Detailed Loan Breakdown</a>
+            <a href="optimized.html" class="loanBreakdown">Loan Optimized Payback</a>
+            <table id="resultsTable"></table>
+            <div class="chart-container">
+                <canvas id="salaryChart"></canvas>
+            </div>
+            <!-- <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </div> -->
+        </section>
+    </div>
+    <script src="script.js"></script>
+</body>
 </html>

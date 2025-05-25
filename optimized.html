@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loan Breakdown</title>
+    <title>Optimized Loan Repayment</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="loanBreakdown.css">
+    <link rel="stylesheet" href="optimized.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2/dist/chartjs-plugin-annotation.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -30,7 +31,7 @@
             <div class="input-group">
                 <label for="term1-fee">Term 1 Fee (₹)</label>
                 <div class="input-row">
-                    <input type="number" id="term1-fee" value="420000">
+                    <input type="number" id="term1-fee" value="483000">
                     <label class="toggle-switch">
                         <input type="checkbox" id="term1-toggle" onchange="toggleTermPayment(1)">
                         <span class="slider"></span>
@@ -41,7 +42,7 @@
             <div class="input-group">
                 <label for="term2-fee">Term 2 Fee (₹)</label>
                 <div class="input-row">
-                    <input type="number" id="term2-fee" value="340000">
+                    <input type="number" id="term2-fee" value="364000">
                     <label class="toggle-switch">
                         <input type="checkbox" id="term2-toggle" checked onchange="toggleTermPayment(2)">
                         <span class="slider"></span>
@@ -52,7 +53,7 @@
             <div class="input-group">
                 <label for="term3-fee">Term 3 Fee (₹)</label>
                 <div class="input-row">
-                    <input type="number" id="term3-fee" value="340000">
+                    <input type="number" id="term3-fee" value="364000">
                     <label class="toggle-switch">
                         <input type="checkbox" id="term3-toggle" checked onchange="toggleTermPayment(3)">
                         <span class="slider"></span>
@@ -63,7 +64,7 @@
             <div class="input-group">
                 <label for="term4-fee">Term 4 Fee (₹)</label>
                 <div class="input-row">
-                    <input type="number" id="term4-fee" value="370000">
+                    <input type="number" id="term4-fee" value="389000">
                     <label class="toggle-switch">
                         <input type="checkbox" id="term4-toggle" checked onchange="toggleTermPayment(4)">
                         <span class="slider"></span>
@@ -74,7 +75,7 @@
             <div class="input-group">
                 <label for="term5-fee">Term 5 Fee (₹)</label>
                 <div class="input-row">
-                    <input type="number" id="term5-fee" value="340000">
+                    <input type="number" id="term5-fee" value="364000">
                     <label class="toggle-switch">
                         <input type="checkbox" id="term5-toggle" checked onchange="toggleTermPayment(5)">
                         <span class="slider"></span>
@@ -85,7 +86,7 @@
             <div class="input-group">
                 <label for="term6-fee">Term 6 Fee (₹)</label>
                 <div class="input-row">
-                    <input type="number" id="term6-fee" value="340000">
+                    <input type="number" id="term6-fee" value="364000">
                     <label class="toggle-switch">
                         <input type="checkbox" id="term6-toggle" checked onchange="toggleTermPayment(6)">
                         <span class="slider"></span>
@@ -95,57 +96,32 @@
 
             <div class="input-group">
                 <label for="interest-rate">Loan Interest Rate (%)</label>
-                <input type="number" id="interest-rate" value="7.5" step="0.05">
+                <input type="number" id="interest-rate" value="7.5" step="0.1">
             </div>
 
             <div class="input-group">
-                <label for="repayment-months">Repayment Period (Months)</label>
-                <input type="number" id="repayment-months" value="72">
+                <label for="post-salary">Post-MBA Salary (₹ p.a.)</label>
+                <input type="number" id="post-salary" value="1500000">
             </div>
         </aside>
 
         <section class="content">
-            <h1>Loan Breakdown</h1>
-            <h3 id="result-table-title">Results</h3>
-            <table class="result-table">
+            <h1>Optimized Loan Repayment</h1>
+            <div class="chart-container">
+                <canvas id="optimizationChart"></canvas>
+            </div>
+            <table class="result-table" id="optimizationTable">
                 <tr>
-                    <th>Loan Amount</th>
-                    <td id="loan-amount">₹0</td>
-                </tr>
-                <tr class="csis-related">
-                    <th>Interest During Moratorium</th>
-                    <td id="interest-moratorium">₹0</td>
-                </tr>
-                <tr class="csis-related">
-                    <th>Principal After Moratorium</th>
-                    <td id="principal-after">₹0</td>
-                </tr>
-                <tr>
-                    <th style="color: red;"><b>Monthly EMI</b></th>
-                    <td style="color: red;" id="monthly-emi">₹0</td>
-                </tr>
-                <tr>
-                    <th>Total Repayment</th>
-                    <td id="total-repayment">₹0</td>
-                </tr>
-                <tr>
-                    <th>Total Interest Paid</th>
-                    <td id="total-interest">₹0</td>
-                </tr>
-                <tr>
-                    <th>Total Cost (Repayment + Cash Paid)</th>
-                    <td id="total-cost">₹0</td>
-                </tr>
-                <tr class="csis-related">
-                    <th style="color: green;"><b>Interest saved with CSIS</b></th>
-                    <td style="color: green;" id="savings">₹0</td>
+                    <th>Rank</th>
+                    <th>Repayment Period (Years)</th>
+                    <th>Months</th>
+                    <th>Monthly EMI (₹)</th>
+                    <th>Total Interest Paid (₹)</th>
+                    <th>EMI as % of Salary</th>
                 </tr>
             </table>
-            <div class="chart-container">
-                <canvas id="loanBreakdownChart"></canvas>
-            </div>
         </section>
     </div>
-    <script src="loanBreakdown.js"></script>
+    <script src="optimized.js"></script>
 </body>
 </html>
